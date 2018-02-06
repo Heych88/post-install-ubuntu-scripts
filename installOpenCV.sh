@@ -3,13 +3,13 @@
 # Information from:
 # https://jkjung-avt.github.io/opencv3-on-tx2/
 #
-# usage installROS.sh [-h|--help] [-d|--directory dir -J|--Jetson TXn]
+# usage installOpenCV.sh [-h|--help] [-d|--directory dir -J|--Jetson TXn]
 
 DEFAULTDIR=~/Programs
 DEFAULTJETSON="TX2"
 
 usage="$(basename "$0") [-h|--help] [-d|--directory dir -J|--Jetson]  
-Install OpenCV on Nvidia Jetson TX2.
+Install OpenCV on Nvidia Jetson TX platforms.
 
 where:
     -h|--help  		show this help text
@@ -102,7 +102,8 @@ if [ $DEFAULTJETSON = "TX1" ]; then
   BIN="5.3"
 else
   if [ $DEFAULTJETSON != "TX2" ]; then
-    echo "$DEFAULTJETSON is not a Jetson model. Options are: TX1 or TX2."
+    echo "$DEFAULTJETSON is not a Jetson model. Options are: TX1 or TX2"
+    echo "Try '$(basename "$0") -h' for more information"
     exit 1
   fi
 fi

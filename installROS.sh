@@ -73,6 +73,7 @@ else
       sudo apt-get install ros-kinetic-ros-base -y
     else
       echo "$DEFAULTINSTALL is not a ROS installation type. Options are: desktop-full, desktop or base."
+      echo "Try '$(basename "$0") -h' for more information"
       exit 1
     fi
   fi
