@@ -5,11 +5,7 @@
 # Original bash installer from
 # https://github.com/jetsonhacks/installROSTX2/blob/master/installROS.sh
 #
-# usage installROS.sh <install ros version>
-#	installROS.sh		(installs desktop-full)
-#	installROS.sh desktop-full
-#	installROS.sh desktop
-#	installROS.sh base
+# usage installROS.sh [-h|--help] [-R|--ROS v -c|--catkin_dir dir]
 
 DEFAULTINSTALL=desktop-full
 DEFAULTDIR=~/catkin_ws
