@@ -4,7 +4,11 @@
 ### usage installUbuntuExtras.sh
 
 # add screen brightness controller
-sudo add-apt-repository ppa:apandada1/brightness-controller | '\n'
+sudo add-apt-repository ppa:apandada1/brightness-controller -y 
+
+# install filezilla
+sudo sh -c 'echo "deb http://archive.getdeb.net/ubuntu xenial-getdeb apps" >> /etc/apt/sources.list.d/getdeb.list' -y
+wget -q -O - http://archive.getdeb.net/getdeb-archive.key | sudo apt-key add -
 
 # install restricted extras
 sudo apt-get install ubuntu-restricted-extras -y
@@ -19,5 +23,8 @@ sudo apt install chromium-browser -y
 
 sudo apt install git -y
 sudo apt-get install nano -y
+
+sudo apt install filezilla -y
+
 sudo apt-get upgrade -y
 
