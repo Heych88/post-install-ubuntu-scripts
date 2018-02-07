@@ -66,10 +66,10 @@ cd installTensorFlowJetsonTX
 echo pwd
 
 # change directories into the Jetsons models folder
-if [ $DEFAULTJETSON = "TX1" ]; then
+if [ "$DEFAULTJETSON" == "TX1" ]; then
   cd TX1
 else
-  if [ $DEFAULTJETSON = "TX2" ]; then
+  if [ "$DEFAULTJETSON" == "TX2" ]; then
     cd TX2
   else
     echo "$DEFAULTJETSON is not a Jetson model. Options are: TX1 or TX2"
@@ -79,12 +79,12 @@ else
 fi
 
 # install TensorFlow into the desired Python version
-if [ $DEFAULTPYTHON = "2.7" ]; then
+if [ "$DEFAULTPYTHON" == "2.7" ]; then
   echo "Installing into Python $DEFAULTPYTHON"
   sudo apt-get install -y python-pip python-dev -y
   pip3 install tensorflow-1.3.0-cp27-cp27mu-linux_aarch64.whl --user
 else 
-  if [ $DEFAULTPYTHON = "3.5" ]; then
+  if [ "$DEFAULTPYTHON" == "3.5" ]; then
     echo "Installing into Python $DEFAULTPYTHON"
     sudo apt-get install -y python3-pip python3-dev -y
     pip3 install tensorflow-1.3.0-cp35-cp35m-linux_aarch64.whl --user
