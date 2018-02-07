@@ -7,14 +7,16 @@
 
 DEFAULTDIR=~/Programs
 DEFAULTJETSON="TX2"
+DEFAULTJETPACK="3.2"
 
-usage="$(basename "$0") [-h|--help] [-d|--directory dir -J|--Jetson]  
+usage="$(basename "$0") [-h|--help] [-d|--directory dir  -J|--Jetson  -P|--JetPack]  
 Install OpenCV on Nvidia Jetson TX platforms.
 
 where:
     -h|--help  		show this help text
     -d|--directory  	OpenCV install directory location. (default: $DEFAULTDIR)
-    -J|--Jetson  	Jetson model that is being install onto. Options: TX1, TX2 (default: $DEFAULTJETSON)"
+    -J|--Jetson  	Jetson model that is being install onto. Options: TX1, TX2 (default: $DEFAULTJETSON)
+    -P|--JetPack	JetPack software version installed on the TX platfrom. Options 3.1, 3.2 (default: $DEFAULTJETPACK)"
 
 # Check for command line options
 while [[ $# -gt 0 ]]
@@ -33,6 +35,11 @@ case $key in
     ;;
   -J|--Jetson)
     DEFAULTJETSON="$2"
+    shift # past argument
+    shift # past value
+    ;;
+  -P|--JetPack)
+    DEFAULTJETPACK="$2"
     shift # past argument
     shift # past value
     ;;
@@ -76,13 +83,32 @@ fi
 wget https://github.com/opencv/opencv/archive/3.4.0.zip -O opencv-3.4.0.zip
 unzip opencv-3.4.0.zip
 
+# get the platform model and the JetPack software version
+HDIR=/usr/local/cuda-9.0/include/cuda_gl_interop.h
+BIN="6.2"
+if [ "$DEFAULTJETSON" == "TX1" ]; then
+  BIN="5.3"
+  HDIR=/usr/local/cuda-8.0/include/cuda_gl_interop.h
+else
+  if [ "$DEFAULTJETSON" == "TX2" ]; then
+    if [ "$DEFAULTJETPACK" == "3.1" ]; then
+      HDIR=/usr/local/cuda-8.0/include/cuda_gl_interop.h
+    fi
+  else
+    echo "$DEFAULTJETSON is not a Jetson model. Options are: TX1 or TX2"
+    echo "Try '$(basename "$0") -h' for more information"
+    exit 1
+  fi
+fi
+echo "Building OpenCV on the Jetson $DEFAULTJETSON platform"
+
 ### Apply the following patch to fix the opengl compilation problems
 ### https://devtalk.nvidia.com/default/topic/1007290/jetson-tx2/building-opencv-with-opengl-support-/post/5141945/#5141945
 ### Or more specifically, comment out lines #62~66 and line #68 in
 ### the following .h file. And then fix the symbolic link of libGL.so.
 #sudo nano /usr/local/cuda-8.0/include/cuda_gl_interop.h -c
+#sudo nano /usr/local/cuda-9.0/include/cuda_gl_interop.h -c
 COUNT=62
-HDIR=/usr/local/cuda-8.0/include/cuda_gl_interop.h
 until [ $COUNT -gt 66 ]; do
   sudo sed -i $COUNT's/#/\/\/#/' $HDIR
   let COUNT=COUNT+1
@@ -96,18 +122,6 @@ sudo ln -sf tegra/libGL.so libGL.so
 cd "$DEFAULTDIR"/opencv-3.4.0
 mkdir build
 cd build
-
-BIN="6.2"
-if [ $DEFAULTJETSON = "TX1" ]; then
-  BIN="5.3"
-else
-  if [ $DEFAULTJETSON != "TX2" ]; then
-    echo "$DEFAULTJETSON is not a Jetson model. Options are: TX1 or TX2"
-    echo "Try '$(basename "$0") -h' for more information"
-    exit 1
-  fi
-fi
-echo "Building OpenCV on the Jetson $DEFAULTJETSON platform"
 
 cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local \
         -D WITH_CUDA=ON -D CUDA_ARCH_BIN=$BIN -D CUDA_ARCH_PTX="" \
